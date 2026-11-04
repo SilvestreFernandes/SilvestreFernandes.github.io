@@ -270,8 +270,6 @@
     .site-card__kind { font-size: var(--fs-s); color: var(--accent2); }
     .site-card__desc { font-size: var(--fs-body); max-width: 24em; }
     .site-card__go { margin-top: 14px; align-self: flex-start; color: var(--ink); font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--accent); padding-bottom: 2px; transition: color var(--t-hover) ease; }
-    .sites__cta { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-top: 18vh; padding: clamp(24px, 3vw, 40px); background: var(--bg2); }
-    .sites__cta p { font-size: var(--fs-st); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; max-width: 22em; }
     @media (hover: hover) and (pointer: fine) {
       .site-card__shot img { transition: transform 900ms var(--ease-expo); }
       .site-card__shot { overflow: hidden; }
@@ -501,7 +499,6 @@
       .site-card { position: static; grid-template-columns: 1fr; box-shadow: none; /* taste-skill-ignore: removes the stacking shadow */ }
       .site-card__bar { font-size: 12px; }
       .site-card__name { font-size: 40px; }
-      .sites__cta { margin-top: 72px; padding: 24px; }
       .figures__more li { flex-direction: column; gap: 6px; }
 
       .work__stage { display: none; }
@@ -594,10 +591,10 @@
 <!-- FIGURES -->
 <section class="figures" aria-labelledby="figures-title">
   <div class="figures__frame">
-    <h2 class="figures__title" id="figures-title" data-reveal>Como a BrandForge trabalha</h2>
+    <h2 class="figures__title" id="figures-title" data-reveal>Na BrandForge</h2>
     <div class="figures__base">
       <p class="figures__big"><span data-roll>1</span> dia útil</p>
-      <p class="figures__note" data-reveal style="--i:2">é o prazo médio de cada site da BrandForge, feito sobre um template próprio em Next.js.</p>
+      <p class="figures__note" data-reveal style="--i:2">é o prazo médio de cada site que entrego, com um template próprio em Next.js.</p>
     </div>
   </div>
   <ul class="figures__more">
@@ -680,10 +677,6 @@
       </div>
     </li>
   </ol>
-  <div class="sites__cta" data-reveal>
-    <p>Quer um site assim para o seu negócio? É o que a BrandForge faz.</p>
-    <a class="btn btn-primary" href="mailto:silvestre.fernandes@sempreceub.com?subject=Site%20pela%20BrandForge">Pedir um orçamento</a>
-  </div>
 </section>
 
 <!-- PROJECTS -->
@@ -821,9 +814,9 @@ components/
 
 <!-- CONTACT -->
 <section class="contact" id="contact" aria-labelledby="contact-title">
-  <h2 class="contact__title" id="contact-title" data-reveal>Uma vaga de estágio em IA ou um site novo? Me escreve.</h2>
+  <h2 class="contact__title" id="contact-title" data-reveal>Tem uma vaga de estágio em IA? Me escreve.</h2>
   <div class="contact__bottom">
-    <a class="contact__mail lines" href="mailto:silvestre.fernandes@sempreceub.com?subject=Contato%20pelo%20site">
+    <a class="contact__mail lines" href="mailto:silvestre.fernandes@sempreceub.com?subject=Est%C3%A1gio%20em%20IA">
       <span class="line"><span data-line style="--i:0">silvestre.fernandes@</span></span>
       <span class="line"><span data-line style="--i:1">sempreceub.com</span></span>
     </a>
