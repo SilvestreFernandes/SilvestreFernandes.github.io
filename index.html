@@ -213,24 +213,10 @@
     .chapter h3 { font-size: var(--fs-st); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 14px; }
     .chapter p { font-size: var(--fs-body); }
 
-    .photo { margin: 0; }
-    .photo img { display: block; width: 100%; height: auto; }
-    .photo figcaption { font-size: var(--fs-s); color: var(--muted); margin-top: 12px; }
-    .photo--wide { width: 100%; }
-    .photo--wide img { aspect-ratio: 16 / 10; object-fit: cover; }
 
-    /* FIGURES: one number set on the edge of a night photograph */
+    /* FIGURES: one number set on the edge of a field of the brand colour */
     .figures { padding-top: calc(var(--gap) * 0.4); z-index: auto; }
-    .figures__frame { position: relative; height: 88svh; min-height: 520px; overflow: hidden; background: #05050a; }
-    .figures__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-    .figures__frame::after {
-      content: '';
-      position: absolute;
-      inset: auto 0 0 0;
-      height: 45%;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.78), transparent); /* taste-skill-ignore: alpha mask / photo scrim, not a fill */
-      pointer-events: none;
-    }
+    .figures__frame { position: relative; height: 66svh; min-height: 460px; overflow: hidden; background: var(--accent); color: var(--bg); }
     .figures__title {
       position: absolute;
       top: var(--m);
@@ -268,6 +254,41 @@
     .roll__col { display: inline-block; height: 1em; overflow: clip; }
     .roll__strip { display: flex; flex-direction: column; transform: translateY(calc(var(--d) * -1em)); }
     .roll__strip::before { content: '0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9'; white-space: pre; line-height: 1em; }
+
+    /* SITES: each project's first screen, stacked like cards as the page scrolls */
+    .sites { padding: var(--gap) var(--m) 0; }
+    .sites__head { display: grid; grid-template-columns: 1fr 1fr; gap: var(--m); align-items: end; margin-bottom: clamp(56px, 8vw, 112px); }
+    .sites__lead { font-size: var(--fs-st); font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; max-width: 20em; }
+    .sites__list { list-style: none; display: flex; flex-direction: column; gap: 28vh; }
+    .site-card {
+      position: sticky;
+      top: 10vh;
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr);
+      gap: clamp(24px, 3vw, 48px);
+      align-items: end;
+      padding: clamp(16px, 1.6vw, 24px);
+      background: var(--bg2);
+      box-shadow: 0 -24px 48px rgba(0, 0, 0, 0.5); /* taste-skill-ignore: sticky card overlapping the one beneath */
+    }
+    .site-card__shot { display: block; background: var(--bg3); color: var(--muted); text-decoration: none; }
+    .site-card__bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; font-size: 13px; }
+    .site-card__bar i { width: 9px; height: 9px; border-radius: 50%; background: #2c2c3e; }
+    .site-card__bar span { margin-left: 10px; }
+    .site-card__shot img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
+    .site-card__info { display: flex; flex-direction: column; gap: 10px; padding-bottom: 8px; }
+    .site-card__name { font-size: var(--fs-l); font-weight: 700; letter-spacing: -0.035em; line-height: 0.95; }
+    .site-card__kind { font-size: var(--fs-s); color: var(--accent2); }
+    .site-card__desc { font-size: var(--fs-body); max-width: 24em; }
+    .site-card__go { margin-top: 14px; align-self: flex-start; color: var(--ink); font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--accent); padding-bottom: 2px; transition: color var(--t-hover) ease; }
+    .sites__cta { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-top: 18vh; padding: clamp(24px, 3vw, 40px); background: var(--bg2); }
+    .sites__cta p { font-size: var(--fs-st); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; max-width: 22em; }
+    @media (hover: hover) and (pointer: fine) {
+      .site-card__shot img { transition: transform 900ms var(--ease-expo); }
+      .site-card__shot { overflow: hidden; }
+      .site-card:hover .site-card__shot img { transform: scale(1.03); }
+      .site-card__go:hover { color: var(--accent2); }
+    }
 
     /* WORK: names pass over a held square that shows the current project */
     .work {
@@ -370,7 +391,6 @@
     }
     .path__board .split-flap-text__tile { width: 0.82em; background: var(--bg3); border-radius: 4px; }
     .path__board #board-b { --split-flap-text-color: var(--accent2); }
-    .path__side .photo img { aspect-ratio: 4 / 3; object-fit: cover; }
 
     .path__list { grid-column: 3; }
     .path__list .heading { margin-bottom: 40px; }
@@ -436,10 +456,8 @@
     .footer__line nav { display: flex; gap: 24px; }
     .footer__line a { color: var(--ink); text-decoration: none; }
     .footer__line p:last-child { text-align: right; }
-    .credits { margin-top: 28px; font-size: var(--fs-s); line-height: 1.6; max-width: 90ch; }
-    .credits a { color: var(--muted); }
     @media (hover: hover) and (pointer: fine) {
-      .footer__line a:hover, .credits a:hover { color: var(--accent2); }
+      .footer__line a:hover { color: var(--accent2); }
       .work__name:hover, .step__head:hover { color: var(--ink); }
     }
 
@@ -469,8 +487,8 @@
     }
     @supports (animation-timeline: view()) {
       @media (prefers-reduced-motion: no-preference) {
-        .figures__img { animation: drift linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
-        @keyframes drift { from { transform: scale(1.14) translateY(-3%); } to { transform: scale(1.02) translateY(3%); } }
+        .figures__big { animation: drift linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
+        @keyframes drift { from { transform: translateX(-4%); } to { transform: translateX(4%); } }
       }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -484,12 +502,17 @@
       .about__pin { position: static; }
       .about__story { gap: 64px; }
 
-      .figures__frame { height: 80svh; }
+      .figures__frame { height: 62svh; min-height: 400px; }
       .figures__base { flex-direction: column-reverse; align-items: flex-start; gap: 20px; }
       .figures__big { font-size: 15vw; white-space: nowrap; }
-      .figures__frame::after { height: 70%; }
       .figures__note { text-align: left; font-size: 16px; }
       .figures__more { grid-template-columns: 1fr; gap: 28px; }
+      .sites__head { grid-template-columns: 1fr; gap: 24px; }
+      .sites__list { gap: 56px; }
+      .site-card { position: static; grid-template-columns: 1fr; box-shadow: none; /* taste-skill-ignore: removes the stacking shadow */ }
+      .site-card__bar { font-size: 12px; }
+      .site-card__name { font-size: 40px; }
+      .sites__cta { margin-top: 72px; padding: 24px; }
       .figures__more li { flex-direction: column; gap: 6px; }
 
       .work__stage { display: none; }
@@ -504,7 +527,6 @@
       .path { grid-template-columns: 1fr; gap: 0; }
       .path__side { position: sticky; top: 0; z-index: 2; grid-column: 1; padding: 16px 0; background: var(--bg); }
       .path__board { font-size: 6.6vw; }
-      .path__side .photo { display: none; }
       .path__list { grid-column: 1; padding-top: 32px; }
 
       .contact { min-height: 86svh; }
@@ -561,11 +583,6 @@
       </p>
     </article>
 
-    <figure class="photo photo--wide shutter">
-      <img src="assets/brazilian-national-congress.jpg" alt="Congresso Nacional em Brasília sob nuvens de chuva" width="1920" height="1211" decoding="async" />
-      <figcaption>Congresso Nacional, Brasília. A cidade onde estudo e trabalho.</figcaption>
-    </figure>
-
     <article class="chapter">
       <h3 data-reveal>Empreendo</h3>
       <p data-reveal style="--i:1">
@@ -588,7 +605,6 @@
 <!-- FIGURES -->
 <section class="figures" aria-labelledby="figures-title">
   <div class="figures__frame">
-    <img class="figures__img" src="assets/esplanada-dos-ministerios-a-noite.jpg" alt="Esplanada dos Ministérios à noite, vista da Torre de TV, com o Congresso Nacional iluminado ao fundo" width="1920" height="1280" loading="lazy" />
     <h2 class="figures__title" id="figures-title" data-reveal>O primeiro mês da BrandForge</h2>
     <div class="figures__base">
       <p class="figures__big"><span data-roll>2</span> clientes</p>
@@ -605,6 +621,84 @@
       <p>por dia, em média, sobre tecnologia e IA no TikTok e no Instagram.</p>
     </li>
   </ul>
+</section>
+
+<!-- SITES -->
+<section class="sites" id="sites" aria-labelledby="sites-title">
+  <div class="sites__head">
+    <h2 class="heading lines" id="sites-title">
+      <span class="line"><span data-line style="--i:0">Sites que</span></span>
+      <span class="line"><span data-line style="--i:1">eu fiz</span></span>
+    </h2>
+    <p class="sites__lead" data-reveal style="--i:2">Cada um desenhado do zero para o negócio que ele vende. Estão todos no ar: abra e navegue.</p>
+  </div>
+  <!-- Para adicionar um site: salve um print da primeira tela (1440×900) em assets/sites/ e copie um <li> abaixo. -->
+  <ol class="sites__list">
+    <li class="site-card">
+      <a class="site-card__shot shutter" href="https://www.dralucianalemes.com.br" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+        <span class="site-card__bar"><i></i><i></i><i></i><span>dralucianalemes.com.br</span></span>
+        <img src="assets/sites/luciana.jpg" alt="" width="1440" height="900" decoding="async" />
+      </a>
+      <div class="site-card__info">
+        <h3 class="site-card__name">Dra. Luciana Lemes</h3>
+        <p class="site-card__kind">Médica · Trindade e Goiânia</p>
+        <p class="site-card__desc">Saúde da mulher depois dos 40, com o agendamento indo direto para o WhatsApp.</p>
+        <a class="site-card__go" href="https://www.dralucianalemes.com.br" target="_blank" rel="noopener">Abrir o site ↗</a>
+      </div>
+    </li>
+    <li class="site-card">
+      <a class="site-card__shot shutter" href="https://iicv.vercel.app/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+        <span class="site-card__bar"><i></i><i></i><i></i><span>iicv.vercel.app</span></span>
+        <img src="assets/sites/iicv.jpg" alt="" width="1440" height="900" decoding="async" />
+      </a>
+      <div class="site-card__info">
+        <h3 class="site-card__name">IICV</h3>
+        <p class="site-card__kind">Instituto de cardiologia · Brasília</p>
+        <p class="site-card__desc">Abre com a marca em ouro sobre azul-noite e leva a consulta a um clique.</p>
+        <a class="site-card__go" href="https://iicv.vercel.app/" target="_blank" rel="noopener">Abrir o site ↗</a>
+      </div>
+    </li>
+    <li class="site-card">
+      <a class="site-card__shot shutter" href="https://chicagoburgersite.vercel.app/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+        <span class="site-card__bar"><i></i><i></i><i></i><span>chicagoburgersite.vercel.app</span></span>
+        <img src="assets/sites/chicago.jpg" alt="" width="1440" height="900" decoding="async" />
+      </a>
+      <div class="site-card__info">
+        <h3 class="site-card__name">Chicago Burger</h3>
+        <p class="site-card__kind">Hamburgueria · Vicente Pires</p>
+        <p class="site-card__desc">Cardápio com preços, vitrine e pedido feito direto pelo site.</p>
+        <a class="site-card__go" href="https://chicagoburgersite.vercel.app/" target="_blank" rel="noopener">Abrir o site ↗</a>
+      </div>
+    </li>
+    <li class="site-card">
+      <a class="site-card__shot shutter" href="https://imobiliaria-lyart.vercel.app/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+        <span class="site-card__bar"><i></i><i></i><i></i><span>imobiliaria-lyart.vercel.app</span></span>
+        <img src="assets/sites/casa-alta.jpg" alt="" width="1440" height="900" decoding="async" />
+      </a>
+      <div class="site-card__info">
+        <h3 class="site-card__name">Casa Alta</h3>
+        <p class="site-card__kind">Imobiliária de alto padrão</p>
+        <p class="site-card__desc">Busca de imóveis por tipo, região e código, com destaques e fotos grandes.</p>
+        <a class="site-card__go" href="https://imobiliaria-lyart.vercel.app/" target="_blank" rel="noopener">Abrir o site ↗</a>
+      </div>
+    </li>
+    <li class="site-card">
+      <a class="site-card__shot shutter" href="https://ironman-pi-silk.vercel.app/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+        <span class="site-card__bar"><i></i><i></i><i></i><span>ironman-pi-silk.vercel.app</span></span>
+        <img src="assets/sites/stark.jpg" alt="" width="1440" height="900" decoding="async" />
+      </a>
+      <div class="site-card__info">
+        <h3 class="site-card__name">Stark Industries</h3>
+        <p class="site-card__kind">Página-conceito</p>
+        <p class="site-card__desc">Um exercício de interface inspirado no Homem de Ferro, com animação presa ao scroll.</p>
+        <a class="site-card__go" href="https://ironman-pi-silk.vercel.app/" target="_blank" rel="noopener">Abrir o site ↗</a>
+      </div>
+    </li>
+  </ol>
+  <div class="sites__cta" data-reveal>
+    <p>Quer um site assim para o seu negócio? É o que a BrandForge faz.</p>
+    <a class="btn btn-primary" href="mailto:silvestre.fernandes@sempreceub.com?subject=Site%20pela%20BrandForge">Pedir um orçamento</a>
+  </div>
 </section>
 
 <!-- PROJECTS -->
@@ -687,7 +781,7 @@ components/
     </li>
     <li class="work__item" data-frag="sites">
       <button type="button" class="work__name">Sites com IA</button>
-      <p class="work__facts"><span>BrandForge: saúde, e projetos de teste em direito e imobiliário</span><span>~1 dia útil</span></p>
+      <p class="work__facts"><span>Saúde, gastronomia, imóveis e páginas-conceito: veja em Sites</span><span>~1 dia útil</span></p>
     </li>
     <li class="work__item" data-frag="template">
       <button type="button" class="work__name">Template Next.js</button>
@@ -703,10 +797,6 @@ components/
       <span id="board-a"></span>
       <span id="board-b"></span>
     </div>
-    <figure class="photo shutter">
-      <img src="assets/brasilia-eixo-monumental-nat-congress-ministries-from.jpg" alt="Eixo Monumental de Brasília visto da Torre de TV, com os ministérios e o Congresso Nacional" width="1920" height="1013" decoding="async" />
-      <figcaption>Eixo Monumental, visto da Torre de TV.</figcaption>
-    </figure>
   </div>
 
   <div class="path__list">
@@ -746,9 +836,9 @@ components/
 
 <!-- CONTACT -->
 <section class="contact" id="contact" aria-labelledby="contact-title">
-  <h2 class="contact__title" id="contact-title" data-reveal>Tem uma vaga de estágio em IA? Me escreve.</h2>
+  <h2 class="contact__title" id="contact-title" data-reveal>Uma vaga de estágio em IA ou um site novo? Me escreve.</h2>
   <div class="contact__bottom">
-    <a class="contact__mail lines" href="mailto:silvestre.fernandes@sempreceub.com?subject=Est%C3%A1gio%20em%20IA">
+    <a class="contact__mail lines" href="mailto:silvestre.fernandes@sempreceub.com?subject=Contato%20pelo%20site">
       <span class="line"><span data-line style="--i:0">silvestre.fernandes@</span></span>
       <span class="line"><span data-line style="--i:1">sempreceub.com</span></span>
     </a>
@@ -764,13 +854,13 @@ components/
     <p>Silvestre Fernandes · IA e automação</p>
     <nav aria-label="Rodapé">
       <a href="#about">Sobre</a>
+      <a href="#sites">Sites</a>
       <a href="#projects">Projetos</a>
       <a href="#trajetoria">Trajetória</a>
       <a href="#contact">Contato</a>
     </nav>
     <p>© 2026</p>
   </div>
-  <p class="credits">Fotos de Brasília via Wikimedia Commons: <a href="https://commons.wikimedia.org/wiki/File:Brazilian_National_Congress.jpg">“Brazilian National Congress”</a>, de Eurico Zimbres, <a href="https://creativecommons.org/licenses/by-sa/2.5">CC BY-SA 2.5</a>; <a href="https://commons.wikimedia.org/wiki/File:Esplanada_dos_Ministerios_a_noite.jpg">“Esplanada dos Ministerios a noite”</a>, de Dasfour2022, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>; <a href="https://commons.wikimedia.org/wiki/File:Brasilia_Eixo_Monumental_Nat_Congress_Ministries_from_TV_Tower.jpg">“Brasilia Eixo Monumental”</a>, de Cayambe, <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</p>
 </footer>
 
 <div id="glow-cursor" style="position:fixed;inset:0;z-index:9999;pointer-events:none"></div>
