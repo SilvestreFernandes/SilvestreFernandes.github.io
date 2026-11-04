@@ -194,18 +194,7 @@
     .about__story { display: flex; flex-direction: column; gap: clamp(72px, 12vh, 140px); padding-bottom: var(--gap); }
 
     .about__portrait { width: min(100%, 620px); }
-    .about__portrait img {
-      display: block;
-      width: 100%;
-      height: auto;
-      /* the photo's pure-black backdrop takes the page color instead of showing as a darker box */
-      mix-blend-mode: lighten;
-      /* fade the black backdrop into the page so the photo has no hard edge */
-      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 10%, #000 75%, transparent 100%); /* taste-skill-ignore: alpha mask / photo scrim, not a fill */
-      -webkit-mask-composite: source-in;
-      mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 10%, #000 75%, transparent 100%); /* taste-skill-ignore: alpha mask / photo scrim, not a fill */
-      mask-composite: intersect;
-    }
+    .about__portrait img { display: block; width: 100%; height: auto; }
 
     .about__statement { font-size: var(--fs-st); font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; max-width: 22em; }
 
@@ -568,8 +557,8 @@
   </div>
 
   <div class="about__story">
-    <figure class="about__portrait" data-reveal>
-      <img src="assets/retrato-silvestre.jpg" alt="Retrato de Silvestre Fernandes" width="1122" height="1402" loading="lazy" />
+    <figure class="about__portrait shutter">
+      <img src="assets/retrato-silvestre.jpg" alt="Retrato de Silvestre Fernandes" width="1086" height="1448" decoding="async" />
     </figure>
 
     <p class="about__statement" data-reveal>Construo agentes, automações e sites com IA, e quero levar isso para um time de engenharia.</p>
