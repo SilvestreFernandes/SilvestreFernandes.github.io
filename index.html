@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Silvestre Fernandes — AI Developer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script>document.documentElement.classList.add('js')</script>
   <link href="split-flap.css" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -18,7 +18,22 @@
       --text: #f0eeff;
       --muted: #8a8aab;
       --border: rgba(124, 109, 255, 0.18);
-      --card: rgba(255,255,255,0.03);
+      --ink: var(--text);
+      --m: clamp(16px, 2.6vw, 40px);
+      --gap: clamp(120px, 15vw, 220px);
+      --fs-xl: clamp(34px, 8.5vw, 140px);
+      --fs-l: clamp(40px, 5.4vw, 88px);
+      --fs-st: clamp(22px, 2.2vw, 32px);
+      --fs-body: 18px;
+      --fs-s: 15px;
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+      --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+      --t-press: 140ms;
+      --t-hover: 180ms;
+      --t-ui: 240ms;
+      --stagger-item: 70ms;
     }
 
     html { scroll-behavior: smooth; }
@@ -26,36 +41,10 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'DM Mono', monospace;
-      font-size: 15px;
-      line-height: 1.7;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 18px;
+      line-height: 1.55;
       overflow-x: hidden;
-    }
-
-    /* Grid noise texture */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(124,109,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124,109,255,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Glow blob */
-    body::after {
-      content: '';
-      position: fixed;
-      top: -200px;
-      right: -200px;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(124,109,255,0.12) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
     }
 
     section { position: relative; z-index: 1; }
@@ -67,8 +56,8 @@
       overflow: hidden;
       pointer-events: none;
       z-index: 0;
-      -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
-      mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%); /* taste-skill-ignore: alpha mask / photo scrim, not a fill */
+      mask-image: linear-gradient(to bottom, #000 60%, transparent 100%); /* taste-skill-ignore: alpha mask / photo scrim, not a fill */
     }
     .flux-lines-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 
@@ -125,302 +114,406 @@
     .hero-name .split-flap-text__char { transform: translateY(-0.025em); }
     .split-flap-text__spacer { visibility: hidden; }
 
+    /* SECTIONS BELOW THE HERO */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-family: 'DM Mono', monospace;
-      font-size: 13px;
-      font-weight: 500;
+      gap: 10px;
+      min-height: 48px;
+      padding: 0 26px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: var(--fs-s);
+      font-weight: 600;
       text-decoration: none;
-      transition: all 0.2s;
       cursor: pointer;
       border: none;
+      transition: transform var(--t-press) var(--ease-out), background-color var(--t-hover) ease, color var(--t-hover) ease;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--accent); color: var(--bg); }
+    .btn-quiet { background: var(--bg3); color: var(--ink); }
+    @media (hover: hover) and (pointer: fine) {
+      .btn-primary:hover { background: #9a8fff; }
+      .btn-quiet:hover { background: #2a2a3d; }
     }
 
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-    }
-    .btn-primary:hover { background: #9585ff; transform: translateY(-2px); }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent2); outline-offset: 4px; }
 
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
+    .heading {
+      font-size: var(--fs-l);
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -0.035em;
     }
-    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
 
-    /* ABOUT */
+    /* masked line reveal: each line rises from behind its own baseline */
+    .lines .line { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+    .lines [data-line] { display: block; }
+
+    /* ABOUT: the heading holds still while the story scrolls past */
     .about {
-      padding: 6rem 3rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .section-label {
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-    }
-
-    .section-title {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(1.8rem, 3vw, 2.5rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 3rem;
-    }
-
-    .about-grid {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 4rem;
-      align-items: center;
+      grid-template-columns: 5fr 7fr;
+      gap: calc(var(--m) * 2);
+      padding: var(--gap) var(--m) 0;
+      /* no stacking context here, so the portrait can blend with the page background */
+      z-index: auto;
     }
 
-    .about-title {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: clamp(1.9rem, 3.4vw, 2.9rem);
-      font-weight: 700;
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-      margin-bottom: 1.5rem;
-    }
+    .about__pin { position: sticky; top: 14vh; align-self: start; }
+    .about__lead { font-size: var(--fs-st); line-height: 1.25; letter-spacing: -0.01em; margin: 28px 0 32px; max-width: 18em; }
 
-    .about-bio { color: var(--muted); line-height: 1.9; max-width: 560px; margin-bottom: 2.5rem; }
-
-    .about-stats {
-      list-style: none;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      padding: 1.5rem 0;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 2rem;
-    }
-
-    .about-stats strong {
-      display: block;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 2.2rem;
-      font-weight: 700;
-      line-height: 1;
-      letter-spacing: -0.03em;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .about-stats span { display: block; color: var(--muted); font-size: 12px; line-height: 1.5; }
-
-    .about-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 12px;
+    .about__status {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      font-size: var(--fs-s);
       color: var(--accent2);
-      border: 1px solid rgba(61,219,217,0.25);
-      padding: 8px 16px;
-      border-radius: 20px;
-      margin-bottom: 2rem;
+      max-width: 34em;
+      margin-bottom: 32px;
     }
-
-    .about-status::before {
+    .about__status::before {
       content: '';
       flex-shrink: 0;
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: var(--accent2);
       animation: pulse 2s infinite;
     }
+    @keyframes pulse { 50% { opacity: 0.35; transform: scale(0.75); } }
 
-    @keyframes pulse {
-      50% { opacity: 0.4; transform: scale(0.8); }
-    }
+    .about__cta { display: flex; gap: 12px; flex-wrap: wrap; }
 
-    .about-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .about__story { display: flex; flex-direction: column; gap: clamp(72px, 12vh, 140px); padding-bottom: var(--gap); }
 
-    /* no stacking context here, so the photo below can blend with the page background */
-    .about { z-index: auto; }
-
-    .about-photo img {
+    .about__portrait { width: min(100%, 620px); }
+    .about__portrait img {
       display: block;
       width: 100%;
       height: auto;
       /* the photo's pure-black backdrop takes the page color instead of showing as a darker box */
       mix-blend-mode: lighten;
       /* fade the black backdrop into the page so the photo has no hard edge */
-      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 10%, #000 75%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 10%, #000 75%, transparent 100%); /* taste-skill-ignore: alpha mask / photo scrim, not a fill */
       -webkit-mask-composite: source-in;
-      mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 10%, #000 75%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%), linear-gradient(180deg, transparent 0%, #000 10%, #000 75%, transparent 100%); /* taste-skill-ignore: alpha mask / photo scrim, not a fill */
       mask-composite: intersect;
     }
 
-    /* PROJECTS */
-    .projects {
-      padding: 6rem 3rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
+    .about__statement { font-size: var(--fs-st); font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; max-width: 22em; }
 
-    .project-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2.5rem;
-      transition: all 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
+    .chapter { max-width: 34em; }
+    .chapter h3 { font-size: var(--fs-st); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 14px; }
+    .chapter p { font-size: var(--fs-body); }
 
-    .project-card::before {
+    .photo { margin: 0; }
+    .photo img { display: block; width: 100%; height: auto; }
+    .photo figcaption { font-size: var(--fs-s); color: var(--muted); margin-top: 12px; }
+    .photo--wide { width: 100%; }
+    .photo--wide img { aspect-ratio: 16 / 10; object-fit: cover; }
+
+    /* FIGURES: one number set on the edge of a night photograph */
+    .figures { padding-top: calc(var(--gap) * 0.4); z-index: auto; }
+    .figures__frame { position: relative; height: 88svh; min-height: 520px; overflow: hidden; background: #05050a; }
+    .figures__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .figures__frame::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      opacity: 0;
-      transition: opacity 0.3s;
+      inset: auto 0 0 0;
+      height: 45%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.78), transparent); /* taste-skill-ignore: alpha mask / photo scrim, not a fill */
+      pointer-events: none;
     }
-
-    .project-card:hover { border-color: rgba(124,109,255,0.4); transform: translateY(-4px); }
-    .project-card:hover::before { opacity: 1; }
-
-    .project-header {
+    .figures__title {
+      position: absolute;
+      top: var(--m);
+      left: var(--m);
+      z-index: 1;
+      font-size: var(--fs-st);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .figures__base {
+      position: absolute;
+      inset: auto var(--m) var(--m) var(--m);
+      z-index: 1;
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
+      align-items: flex-end;
+      gap: 32px;
     }
+    .figures__big { font-size: var(--fs-xl); font-weight: 700; line-height: 0.8; letter-spacing: -0.045em; }
+    .figures__note { font-size: var(--fs-body); max-width: 26ch; text-align: right; }
 
-    .project-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
+    .figures__more {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--m);
+      padding: 40px var(--m) 0;
     }
+    .figures__more li { display: flex; align-items: baseline; gap: 20px; }
+    .figures__num { font-size: var(--fs-l); font-weight: 700; letter-spacing: -0.035em; line-height: 1; white-space: nowrap; }
+    .figures__more p { font-size: var(--fs-body); max-width: 24ch; }
 
-    .project-badge {
-      font-size: 11px;
-      padding: 4px 12px;
-      border-radius: 20px;
-      background: rgba(124,109,255,0.15);
-      color: var(--accent);
-      border: 1px solid rgba(124,109,255,0.25);
-    }
+    /* rolling figures */
+    .roll__digits { display: inline-flex; font-variant-numeric: tabular-nums; line-height: 1; }
+    .roll__col { display: inline-block; height: 1em; overflow: clip; }
+    .roll__strip { display: flex; flex-direction: column; transform: translateY(calc(var(--d) * -1em)); }
+    .roll__strip::before { content: '0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9'; white-space: pre; line-height: 1em; }
 
-    .project-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 0.75rem;
-    }
-
-    .project-desc {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.8;
-      margin-bottom: 1.5rem;
-    }
-
-    .tech-stack {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 1.5rem;
-    }
-
-    .tech-tag {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 4px;
-      background: rgba(61,219,217,0.1);
-      color: var(--accent2);
-      border: 1px solid rgba(61,219,217,0.2);
-    }
-
-    .project-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 13px;
-      transition: gap 0.2s;
-    }
-    .project-link:hover { gap: 10px; }
-
-    /* CONTACT */
-    .contact {
-      padding: 6rem 3rem;
-      max-width: 1100px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .contact-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 4rem;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .contact-card p {
-      color: var(--muted);
-      margin-bottom: 2rem;
-      line-height: 1.8;
-    }
-
-    .contact-links {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 3rem;
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
+    /* WORK: names pass over a held square that shows the current project */
+    .work {
+      --sq: min(31vw, 450px);
       position: relative;
-      z-index: 1;
+      padding: var(--gap) var(--m) 0;
+      /* the held frame hangs below its zero-height sticky box; clip it at the section's end (clip keeps sticky working) */
+      overflow: clip;
     }
+    .work__stage {
+      position: sticky;
+      top: calc(50svh - var(--sq) / 2);
+      height: var(--sq);
+      margin-bottom: calc(var(--sq) * -1);
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .work__frame { position: relative; width: var(--sq); height: var(--sq); background: var(--bg2); overflow: hidden; }
 
-    /* Animations */
-    .fade-in {
+    .frag {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 22px;
+      font-size: 14px;
+      line-height: 1.45;
       opacity: 0;
-      transform: translateY(20px);
-      animation: fadeIn 0.7s ease forwards;
+      transition: opacity 200ms ease;
     }
-    @keyframes fadeIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .delay-1 { animation-delay: 0.1s; }
-    .delay-2 { animation-delay: 0.2s; }
-    .delay-3 { animation-delay: 0.3s; }
-    .delay-4 { animation-delay: 0.4s; }
+    .frag.is-on { opacity: 1; }
+    .frag__bar { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+    .frag__live { width: 8px; height: 8px; border-radius: 50%; background: #ff5d6c; animation: pulse 1.4s infinite; }
+    .frag__chat { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .frag__chat li { max-width: 82%; padding: 9px 13px; border-radius: 14px; background: var(--bg3); color: var(--ink); }
+    .frag__chat .me { align-self: flex-end; background: #2b2650; }
+    .frag__src { font-size: 13px; color: var(--accent2); margin-top: 4px; display: block; }
+    .frag__meta { margin-top: auto; color: var(--muted); font-size: 13px; }
+    .frag pre { margin: 0; font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; font-size: 13px; line-height: 1.6; color: var(--ink); white-space: pre-wrap; }
+    .frag pre .p { color: var(--accent2); }
+    .frag pre .c { color: var(--muted); }
+    .frag--site { padding: 0; gap: 0; }
+    .site__bar { display: flex; gap: 6px; padding: 12px 14px; background: var(--bg3); }
+    .site__bar i { width: 9px; height: 9px; border-radius: 50%; background: #3a3a52; }
+    .site__body { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 22px; background: #eef1f7; color: #10131c; }
+    .site__body strong { font-size: 26px; line-height: 1.05; letter-spacing: -0.02em; }
+    .site__cta { display: inline-block; font-style: normal; align-self: flex-start; padding: 8px 14px; border-radius: 999px; background: #c8233a; color: #fff; font-size: 13px; font-weight: 600; }
+    .site__facts { display: flex; gap: 16px; color: #4a5060; font-size: 13px; }
 
-    @media (max-width: 768px) {
-      .about, .projects, .contact { padding-left: 1.5rem; padding-right: 1.5rem; }
-      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-      .about-photo { order: -1; max-width: 420px; margin: 0 auto; }
-      .about-stats { gap: 1rem; }
-      .about-stats strong { font-size: 1.7rem; }
-      @media (prefers-reduced-motion: reduce) { .about-status::before { animation: none; } }
-      .contact-card { padding: 2rem; }
+    .work__list { position: relative; z-index: 1; list-style: none; text-align: center; }
+    .work__item { padding-block: 13svh; }
+    .work__item:first-child { padding-top: 0; }
+    .work__item:last-child { padding-bottom: calc(var(--sq) / 2); }
+    .work__heading { font-size: var(--fs-xl); font-weight: 700; line-height: 0.85; letter-spacing: -0.045em; text-transform: uppercase; color: var(--muted); }
+    .work__name {
+      display: inline-block;
+      font: inherit;
+      font-size: var(--fs-xl);
+      font-weight: 700;
+      line-height: 0.85;
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: 0;
+      cursor: pointer;
+      transition: color var(--t-hover) ease;
+    }
+    .work__item.is-on .work__name { color: var(--ink); }
+    .work__facts {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      max-width: calc(var(--sq) + 2 * 260px);
+      margin: 28px auto 0;
+      font-size: var(--fs-s);
+      color: var(--muted);
+    }
+    .work__facts span:last-child { text-align: right; }
+    .work__inline { display: none; }
+
+    /* PATH: a departure board flips to the step in the middle of the screen */
+    .path {
+      display: grid;
+      grid-template-columns: 5fr 1fr 6fr;
+      gap: var(--m);
+      padding: var(--gap) var(--m) calc(var(--m) * 2);
+    }
+    .path__side { grid-column: 1; position: sticky; top: 12vh; align-self: start; display: flex; flex-direction: column; gap: 28px; }
+    .path__board { display: flex; flex-direction: column; gap: 8px; font-size: clamp(22px, 3vw, 48px); }
+    .path__board .split-flap-text {
+      --split-flap-gap: 0.08em;
+      --split-flap-text-color: var(--ink);
+      font-family: inherit;
+      font-size: 1em;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .path__board .split-flap-text__tile { width: 0.82em; background: var(--bg3); border-radius: 4px; }
+    .path__board #board-b { --split-flap-text-color: var(--accent2); }
+    .path__side .photo img { aspect-ratio: 4 / 3; object-fit: cover; }
+
+    .path__list { grid-column: 3; }
+    .path__list .heading { margin-bottom: 40px; }
+    .steps { list-style: none; }
+    .step__head {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 24px;
+      min-height: 64px;
+      padding: 14px 0;
+      font: inherit;
+      text-align: left;
+      color: var(--muted);
+      background: none;
+      border: 0;
+      cursor: pointer;
+      transition: color var(--t-hover) ease;
+    }
+    .step__name { font-size: var(--fs-st); font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; }
+    .step__when { font-size: var(--fs-s); white-space: nowrap; }
+    .step.is-on .step__head { color: var(--ink); }
+    .step.is-on .step__when { color: var(--accent2); }
+    .step__desc { display: grid; grid-template-rows: 1fr; transition: grid-template-rows var(--t-ui) var(--ease-out); }
+    .step__desc > p { overflow: hidden; font-size: var(--fs-body); max-width: 36em; }
+    .step__desc > p::after { content: ''; display: block; height: 18px; }
+    .js .step:not(.is-on) .step__desc { grid-template-rows: 0fr; }
+
+    /* CONTACT: the address itself is the display type */
+    .contact {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 64px;
+      padding: var(--m);
+      background: var(--ink);
+      color: var(--bg);
+    }
+    .contact__title { font-size: var(--fs-st); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; max-width: 16em; }
+    .contact__bottom { display: flex; flex-direction: column; gap: 40px; }
+    .contact__mail {
+      display: block;
+      font-size: var(--fs-xl);
+      font-weight: 500;
+      line-height: 0.92;
+      letter-spacing: -0.05em;
+      color: inherit;
+      text-decoration: none;
+      transition: color var(--t-hover) ease;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .contact__mail:hover { color: #5b4bea; }
+      .contact__corner a:hover { color: #5b4bea; }
+    }
+    .contact__corners { display: flex; justify-content: space-between; gap: 24px; font-size: var(--fs-s); }
+    .contact__corner a { color: inherit; font-weight: 600; text-decoration: none; transition: color var(--t-hover) ease; }
+    .contact__corner { display: flex; gap: 24px; }
+
+    footer { position: relative; z-index: 1; padding: 64px var(--m) 30px; font-size: var(--fs-s); color: var(--muted); }
+    .footer__line { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: baseline; }
+    .footer__line nav { display: flex; gap: 24px; }
+    .footer__line a { color: var(--ink); text-decoration: none; }
+    .footer__line p:last-child { text-align: right; }
+    .credits { margin-top: 28px; font-size: var(--fs-s); line-height: 1.6; max-width: 90ch; }
+    .credits a { color: var(--muted); }
+    @media (hover: hover) and (pointer: fine) {
+      .footer__line a:hover, .credits a:hover { color: var(--accent2); }
+      .work__name:hover, .step__head:hover { color: var(--ink); }
+    }
+
+    /* MOTION: entrances once, transform and opacity only */
+    @media (prefers-reduced-motion: no-preference) {
+      .js [data-reveal] {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 700ms var(--ease-out), transform 900ms var(--ease-expo);
+        transition-delay: calc(var(--i, 0) * 80ms);
+      }
+      .js [data-reveal].is-in { opacity: 1; transform: none; }
+
+      .js .lines [data-line] { transform: translateY(105%); transition: transform 900ms var(--ease-expo); transition-delay: calc(var(--i, 0) * 110ms); }
+      .js .lines.is-in [data-line] { transform: none; }
+
+      /* the clip sits on the picture, not the figure: Chrome's IntersectionObserver never sees a fully clipped target */
+      .js .shutter { overflow: hidden; }
+      .js .shutter img { clip-path: inset(100% 0 0 0); transform: scale(1.12); transition: clip-path 1100ms var(--ease-in-out), transform 1500ms var(--ease-soft); }
+      .js .shutter.is-in img { clip-path: inset(0); transform: none; }
+
+      .roll:not(.is-in) .roll__strip { transform: none; }
+      .roll.is-in .roll__strip { transition: transform 1100ms var(--ease-expo) calc(var(--i) * var(--stagger-item)); }
+
+      .work__item.is-on .work__name { transform: scale(1.02); }
+      .work__name { transition: color var(--t-hover) ease, transform var(--t-ui) var(--ease-out); }
+    }
+    @supports (animation-timeline: view()) {
+      @media (prefers-reduced-motion: no-preference) {
+        .figures__img { animation: drift linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
+        @keyframes drift { from { transform: scale(1.14) translateY(-3%); } to { transform: scale(1.02) translateY(3%); } }
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .about__status::before, .frag__live { animation: none; }
+      .step__desc { transition: none; }
+    }
+
+    @media (max-width: 860px) {
+      .about { grid-template-columns: 1fr; gap: 56px; }
+      .about__pin { position: static; }
+      .about__story { gap: 64px; }
+
+      .figures__frame { height: 80svh; }
+      .figures__base { flex-direction: column-reverse; align-items: flex-start; gap: 20px; }
+      .figures__big { font-size: 15vw; white-space: nowrap; }
+      .figures__frame::after { height: 70%; }
+      .figures__note { text-align: left; font-size: 16px; }
+      .figures__more { grid-template-columns: 1fr; gap: 28px; }
+      .figures__more li { flex-direction: column; gap: 6px; }
+
+      .work__stage { display: none; }
+      .work__inline { display: block; position: relative; width: min(100%, 380px); aspect-ratio: 1; margin: 24px auto 0; background: var(--bg2); overflow: hidden; text-align: left; }
+      .work__item.is-on .work__name { transform: none; }
+      .work__name, .work__heading { font-size: 11vw; line-height: 0.92; }
+      .work__item { padding-block: 56px; }
+      .work__item:last-child { padding-bottom: 0; }
+      .work__facts { flex-direction: column; gap: 4px; align-items: center; margin-top: 18px; }
+      .work__facts span:last-child { text-align: center; }
+
+      .path { grid-template-columns: 1fr; gap: 0; }
+      .path__side { position: sticky; top: 0; z-index: 2; grid-column: 1; padding: 16px 0; background: var(--bg); }
+      .path__board { font-size: 6.6vw; }
+      .path__side .photo { display: none; }
+      .path__list { grid-column: 1; padding-top: 32px; }
+
+      .contact { min-height: 86svh; }
+      .contact__mail { font-size: 8.6vw; }
+      .contact__corners { flex-direction: column; gap: 12px; }
+
+      .footer__line { grid-template-columns: 1fr; gap: 8px; }
+      .footer__line nav { flex-wrap: wrap; gap: 8px 20px; }
+      .footer__line p:last-child { text-align: left; }
     }
   </style>
 </head>
@@ -438,86 +531,246 @@
 </section>
 
 <!-- ABOUT -->
-<section class="about" id="about">
-  <div class="about-grid">
-    <div>
-      <div class="section-label">Estudante de IA · Cofundador da BrandForge</div>
-      <h2 class="about-title">Construo agentes, automações e sites com IA, e quero levar isso para um time de engenharia.</h2>
-      <p class="about-bio">
-        Curso Bacharelado em Inteligência Artificial na UniCEUB e faço o CS50P de Harvard.
-        Sou cofundador da BrandForge, que cria presença digital e automações com IA para pequenas e médias empresas.
-        Já construí agentes com RAG e um protótipo de atendente de IA por voz.
-      </p>
-      <ul class="about-stats">
-        <li><strong>2</strong><span>clientes pagantes no 1º mês da BrandForge</span></li>
-        <li><strong>~1 dia</strong><span>útil para entregar um site</span></li>
-        <li><strong>~10</strong><span>vídeos por dia sobre IA no TikTok</span></li>
-      </ul>
-      <p class="about-status">Disponível para estágio em Engenharia de IA · remoto ou híbrido em Brasília · início imediato</p>
-      <div class="about-cta">
-        <a href="https://www.linkedin.com/in/silvestre-fernandes-silva/" target="_blank" rel="noopener" class="btn btn-primary">LinkedIn ↗</a>
-        <a href="mailto:silvestre.fernandes@sempreceub.com" class="btn btn-outline">silvestre.fernandes@sempreceub.com</a>
-      </div>
+<section class="about" id="about" aria-labelledby="about-title">
+  <div class="about__pin">
+    <h2 class="heading lines" id="about-title">
+      <span class="line"><span data-line style="--i:0">Quem é</span></span>
+      <span class="line"><span data-line style="--i:1">Silvestre</span></span>
+    </h2>
+    <p class="about__lead" data-reveal style="--i:2">Estudante de Inteligência Artificial e cofundador da BrandForge, em Brasília.</p>
+    <p class="about__status" data-reveal style="--i:3">Disponível para estágio em Engenharia de IA · remoto ou híbrido em Brasília · início imediato</p>
+    <div class="about__cta" data-reveal style="--i:4">
+      <a href="mailto:silvestre.fernandes@sempreceub.com?subject=Est%C3%A1gio%20em%20IA" class="btn btn-primary">Mandar um e-mail</a>
+      <a href="https://www.linkedin.com/in/silvestre-fernandes-silva/" target="_blank" rel="noopener" class="btn btn-quiet">LinkedIn ↗</a>
     </div>
-    <figure class="about-photo">
+  </div>
+
+  <div class="about__story">
+    <figure class="about__portrait" data-reveal>
       <img src="assets/retrato-silvestre.jpg" alt="Retrato de Silvestre Fernandes" width="1122" height="1402" loading="lazy" />
     </figure>
+
+    <p class="about__statement" data-reveal>Construo agentes, automações e sites com IA, e quero levar isso para um time de engenharia.</p>
+
+    <article class="chapter">
+      <h3 data-reveal>Estudo</h3>
+      <p data-reveal style="--i:1">
+        Curso Bacharelado em Inteligência Artificial na UniCEUB, com conclusão prevista para julho de 2029,
+        e faço o CS50P de Harvard, hoje na parte de unit tests. Na disciplina de Agentes de IA,
+        construí agentes com NLP e RAG.
+      </p>
+    </article>
+
+    <figure class="photo photo--wide shutter">
+      <img src="assets/brazilian-national-congress.jpg" alt="Congresso Nacional em Brasília sob nuvens de chuva" width="1920" height="1211" decoding="async" />
+      <figcaption>Congresso Nacional, Brasília. A cidade onde estudo e trabalho.</figcaption>
+    </figure>
+
+    <article class="chapter">
+      <h3 data-reveal>Empreendo</h3>
+      <p data-reveal style="--i:1">
+        Em outubro de 2026 cofundei, com um sócio, a BrandForge: presença digital e automações com IA
+        para pequenas e médias empresas. Levanto requisitos, desenvolvo e entrego os sites,
+        e cuido da prospecção e das vendas.
+      </p>
+    </article>
+
+    <article class="chapter">
+      <h3 data-reveal>Comunico</h3>
+      <p data-reveal style="--i:1">
+        Publico cerca de dez vídeos por dia sobre tecnologia e IA no TikTok e no Instagram.
+        É conteúdo em escala, todo dia, e é ele que traz contatos de novos clientes para a BrandForge.
+      </p>
+    </article>
   </div>
 </section>
 
-<!-- PROJECTS -->
-<section class="projects" id="projects">
-  <div class="section-label">// projetos</div>
-  <h2 class="section-title">O que estou construindo</h2>
+<!-- FIGURES -->
+<section class="figures" aria-labelledby="figures-title">
+  <div class="figures__frame">
+    <img class="figures__img" src="assets/esplanada-dos-ministerios-a-noite.jpg" alt="Esplanada dos Ministérios à noite, vista da Torre de TV, com o Congresso Nacional iluminado ao fundo" width="1920" height="1280" loading="lazy" />
+    <h2 class="figures__title" id="figures-title" data-reveal>O primeiro mês da BrandForge</h2>
+    <div class="figures__base">
+      <p class="figures__big"><span data-roll>2</span> clientes</p>
+      <p class="figures__note" data-reveal style="--i:2">pagantes no primeiro mês da empresa de presença digital e automações com IA que cofundei.</p>
+    </div>
+  </div>
+  <ul class="figures__more">
+    <li data-reveal>
+      <span class="figures__num"><span data-roll>1</span> dia útil</span>
+      <p>é o prazo médio de cada site que entrego, com um template próprio em Next.js.</p>
+    </li>
+    <li data-reveal style="--i:1">
+      <span class="figures__num"><span data-roll>10</span> vídeos</span>
+      <p>por dia, em média, sobre tecnologia e IA no TikTok e no Instagram.</p>
+    </li>
+  </ul>
+</section>
 
-  <div class="project-card">
-    <div class="project-header">
-      <div class="project-icon">🤖</div>
-      <span class="project-badge">Python · CLI</span>
+<!-- PROJECTS -->
+<section class="work" id="projects" aria-labelledby="work-title">
+  <div class="work__stage" aria-hidden="true">
+    <div class="work__frame">
+      <div class="frag" data-ui data-frag="voz">
+        <p class="frag__bar"><span class="frag__live"></span>Ligação · clínica de cardiologia</p>
+        <ul class="frag__chat">
+          <li>Oi, queria marcar uma consulta com o cardiologista.</li>
+          <li class="me">Claro. Você prefere de manhã ou à tarde?</li>
+          <li>De manhã, se tiver.</li>
+          <li class="me">Tenho quinta às 9h. Posso confirmar?</li>
+        </ul>
+        <p class="frag__meta">VAPI · ElevenLabs · Twilio · n8n · Google Sheets</p>
+      </div>
+      <div class="frag" data-ui data-frag="rag">
+        <p class="frag__bar">Atendente da empresa · Claude Haiku</p>
+        <ul class="frag__chat">
+          <li class="me">Qual é o horário de atendimento?</li>
+          <li>De segunda a sexta, das 8h às 18h.<span class="frag__src">Fonte: FAQ da empresa</span></li>
+          <li class="me">E como peço reembolso?</li>
+          <li>Pelo formulário da área do cliente, em até 7 dias.<span class="frag__src">Fonte: política interna, item 4</span></li>
+        </ul>
+        <p class="frag__meta">RAG sobre um documento da empresa e o seu FAQ</p>
+      </div>
+      <div class="frag" data-ui data-frag="terminal">
+        <p class="frag__bar">claude-terminal-chat</p>
+<pre><code><span class="c">$</span> python main.py
+<span class="p">Você ›</span> Explica RAG em uma frase?
+<span class="p">Claude ›</span> É buscar os trechos certos de
+um documento e entregar ao modelo
+junto com a pergunta.
+<span class="p">Você ›</span> E em inglês?
+<span class="p">Claude ›</span> It means retrieving the right
+passages and handing them to the
+model with the question.
+<span class="p">Você ›</span> _</code></pre>
+        <p class="frag__meta">Python · SDK da Anthropic · conversa multi-turno</p>
+      </div>
+      <div class="frag frag--site" data-ui data-frag="sites">
+        <div class="site__bar"><i></i><i></i><i></i></div>
+        <div class="site__body">
+          <div class="site__facts"><span>Cardiologia</span><span>Brasília</span></div>
+          <strong>Cuide do seu coração.</strong>
+          <em class="site__cta">Agendar consulta</em>
+        </div>
+      </div>
+      <div class="frag" data-ui data-frag="template">
+        <p class="frag__bar">template-next · estrutura</p>
+<pre><code>app/
+  layout.tsx
+  page.tsx
+components/
+  hero.tsx
+  contato.tsx
+<span class="c">tailwind.config.ts</span>
+<span class="c">tsconfig.json</span>
+
+<span class="c">$</span> npx create-next-app <span class="p">--use template</span>
+<span class="p">pronto:</span> novo site em minutos</code></pre>
+        <p class="frag__meta">Next.js · TypeScript · Tailwind</p>
+      </div>
     </div>
-    <div class="project-title">Claude Terminal Chat</div>
-    <p class="project-desc">
-      Chatbot conversacional que roda direto no terminal, integrado à API do Claude da Anthropic. 
-      Suporta conversas multi-turno com histórico completo, interface colorida no terminal 
-      e respostas automáticas em português ou inglês dependendo do idioma do usuário.
-    </p>
-    <div class="tech-stack">
-      <span class="tech-tag">Python 3.8+</span>
-      <span class="tech-tag">Anthropic SDK</span>
-      <span class="tech-tag">CLI</span>
-      <span class="tech-tag">API Integration</span>
+  </div>
+
+  <ol class="work__list">
+    <li class="work__item"><h2 class="work__heading" id="work-title">Projetos</h2></li>
+    <li class="work__item" data-frag="voz">
+      <button type="button" class="work__name">Atendente de voz</button>
+      <p class="work__facts"><span>Protótipo de atendimento por ligação para uma clínica de cardiologia</span><span>Início de 2026</span></p>
+    </li>
+    <li class="work__item" data-frag="rag">
+      <button type="button" class="work__name">Agente com RAG</button>
+      <p class="work__facts"><span>Projeto acadêmico na UniCEUB: responde dúvidas a partir de documentos</span><span>2026</span></p>
+    </li>
+    <li class="work__item" data-frag="terminal">
+      <button type="button" class="work__name">Chat de terminal</button>
+      <p class="work__facts"><span>Python com a API da Anthropic, em português ou inglês</span><span>Multi-turno</span></p>
+    </li>
+    <li class="work__item" data-frag="sites">
+      <button type="button" class="work__name">Sites com IA</button>
+      <p class="work__facts"><span>BrandForge: saúde, e projetos de teste em direito e imobiliário</span><span>~1 dia útil</span></p>
+    </li>
+    <li class="work__item" data-frag="template">
+      <button type="button" class="work__name">Template Next.js</button>
+      <p class="work__facts"><span>A base que acelera cada novo site da BrandForge</span><span>Next.js · TS · Tailwind</span></p>
+    </li>
+  </ol>
+</section>
+
+<!-- PATH -->
+<section class="path" id="trajetoria" aria-labelledby="path-title">
+  <div class="path__side">
+    <div class="path__board" aria-hidden="true">
+      <span id="board-a"></span>
+      <span id="board-b"></span>
     </div>
-    <a href="https://github.com/SilvestreFernandes/chatbot-terminal" target="_blank" class="project-link">
-      ver no GitHub →
-    </a>
+    <figure class="photo shutter">
+      <img src="assets/brasilia-eixo-monumental-nat-congress-ministries-from.jpg" alt="Eixo Monumental de Brasília visto da Torre de TV, com os ministérios e o Congresso Nacional" width="1920" height="1013" decoding="async" />
+      <figcaption>Eixo Monumental, visto da Torre de TV.</figcaption>
+    </figure>
+  </div>
+
+  <div class="path__list">
+    <h2 class="heading lines" id="path-title"><span class="line"><span data-line>Trajetória</span></span></h2>
+    <ol class="steps">
+      <li class="step" data-board="ESTAGIO IA|IMEDIATO">
+        <button type="button" class="step__head"><span class="step__name">Estágio em Engenharia de IA</span><span class="step__when">próximo destino</span></button>
+        <div class="step__desc"><p>Remoto ou híbrido em Brasília, com 6 a 8 horas por dia e início imediato. Quero aprofundar a base em machine learning aprendendo com um time experiente.</p></div>
+      </li>
+      <li class="step" data-board="BRANDFORGE|10 2026">
+        <button type="button" class="step__head"><span class="step__name">Cofundador e CEO · BrandForge</span><span class="step__when">desde 10/2026</span></button>
+        <div class="step__desc"><p>Presença digital e automações com IA para pequenas e médias empresas. Dois clientes pagantes no primeiro mês, sites entregues em cerca de um dia útil.</p></div>
+      </li>
+      <li class="step" data-board="HARVARD|12 2026">
+        <button type="button" class="step__head"><span class="step__name">CS50P · Harvard</span><span class="step__when">até 12/2026</span></button>
+        <div class="step__desc"><p>Introdução à programação com Python: fundamentos, bibliotecas, estruturas de dados e unit tests.</p></div>
+      </li>
+      <li class="step" data-board="UNICEUB|07 2029">
+        <button type="button" class="step__head"><span class="step__name">Bacharelado em Inteligência Artificial · UniCEUB</span><span class="step__when">até 07/2029</span></button>
+        <div class="step__desc"><p>Em andamento. Na disciplina de Agentes de IA, construí agentes com NLP e RAG.</p></div>
+      </li>
+      <li class="step" data-board="AWS ML|CONCLUIDO">
+        <button type="button" class="step__head"><span class="step__name">AWS Machine Learning Foundations</span><span class="step__when">certificado</span></button>
+        <div class="step__desc"><p>Fundamentos de machine learning na AWS.</p></div>
+      </li>
+      <li class="step" data-board="AWS GENAI|CONCLUIDO">
+        <button type="button" class="step__head"><span class="step__name">AWS Generative AI Foundations</span><span class="step__when">certificado</span></button>
+        <div class="step__desc"><p>Fundamentos de IA generativa na AWS.</p></div>
+      </li>
+      <li class="step" data-board="GIT LOGICA|CONCLUIDO">
+        <button type="button" class="step__head"><span class="step__name">Git e GitHub · Lógica de Programação</span><span class="step__when">certificados</span></button>
+        <div class="step__desc"><p>Dois cursos do Curso em Vídeo, a base do meu fluxo de trabalho com código.</p></div>
+      </li>
+    </ol>
   </div>
 </section>
 
 <!-- CONTACT -->
-<section class="contact" id="contact">
-  <div class="section-label">// contato</div>
-  <h2 class="section-title">Vamos conversar</h2>
-  <div class="contact-card">
-    <p>
-      Aberto a oportunidades remotas em IA, colaborações em projetos 
-      e conexões com a comunidade tech. Me manda uma mensagem!
-    </p>
-    <div class="contact-links">
-      <a href="https://www.linkedin.com/in/silvestre-fernandes-silva/" target="_blank" class="btn btn-primary">
-        LinkedIn ↗
-      </a>
-      <a href="https://github.com/SilvestreFernandes" target="_blank" class="btn btn-outline">
-        GitHub ↗
-      </a>
+<section class="contact" id="contact" aria-labelledby="contact-title">
+  <h2 class="contact__title" id="contact-title" data-reveal>Tem uma vaga de estágio em IA? Me escreve.</h2>
+  <div class="contact__bottom">
+    <a class="contact__mail lines" href="mailto:silvestre.fernandes@sempreceub.com?subject=Est%C3%A1gio%20em%20IA">
+      <span class="line"><span data-line style="--i:0">silvestre.fernandes@</span></span>
+      <span class="line"><span data-line style="--i:1">sempreceub.com</span></span>
+    </a>
+    <div class="contact__corners">
+      <p>Brasília, DF · remoto ou híbrido</p>
+      <p class="contact__corner"><a href="https://www.linkedin.com/in/silvestre-fernandes-silva/" target="_blank" rel="noopener">LinkedIn ↗</a></p>
     </div>
-    <p style="margin-top: 1.5rem; font-size: 13px;">
-      silvestrefernandes12345@gmail.com
-    </p>
   </div>
 </section>
 
 <footer>
-  <p>© 2026 Silvestre Fernandes · Feito com HTML, CSS e curiosidade.</p>
+  <div class="footer__line">
+    <p>Silvestre Fernandes · IA e automação</p>
+    <nav aria-label="Rodapé">
+      <a href="#about">Sobre</a>
+      <a href="#projects">Projetos</a>
+      <a href="#trajetoria">Trajetória</a>
+      <a href="#contact">Contato</a>
+    </nav>
+    <p>© 2026</p>
+  </div>
+  <p class="credits">Fotos de Brasília via Wikimedia Commons: <a href="https://commons.wikimedia.org/wiki/File:Brazilian_National_Congress.jpg">“Brazilian National Congress”</a>, de Eurico Zimbres, <a href="https://creativecommons.org/licenses/by-sa/2.5">CC BY-SA 2.5</a>; <a href="https://commons.wikimedia.org/wiki/File:Esplanada_dos_Ministerios_a_noite.jpg">“Esplanada dos Ministerios a noite”</a>, de Dasfour2022, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>; <a href="https://commons.wikimedia.org/wiki/File:Brasilia_Eixo_Monumental_Nat_Congress_Ministries_from_TV_Tower.jpg">“Brasilia Eixo Monumental”</a>, de Cayambe, <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>.</p>
 </footer>
 
 <div id="glow-cursor" style="position:fixed;inset:0;z-index:9999;pointer-events:none"></div>
@@ -539,5 +792,6 @@
     glow: 2, rimWidth: 0.2, lineWidth: 1, flowDirection: 'down'
   });
 </script>
+<script src="sections.js"></script>
 </body>
 </html>
