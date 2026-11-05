@@ -167,27 +167,22 @@
     }
 
     .about__pin { position: sticky; top: 14vh; align-self: start; }
-    .about__lead { font-size: var(--fs-st); line-height: 1.25; letter-spacing: -0.01em; margin: 28px 0 32px; max-width: 18em; }
 
-    .about__status {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-      font-size: var(--fs-s);
-      color: var(--accent2);
-      max-width: 34em;
-      margin-bottom: 32px;
-    }
-    .about__status::before {
-      content: '';
-      flex-shrink: 0;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent2);
-      animation: pulse 2s infinite;
-    }
+    /* TERMINAL: types itself once when it scrolls into view (terminal.js); the full text stays in the HTML */
+    .term { max-width: 34em; margin: 28px 0 32px; background: var(--bg2); border-radius: 8px; overflow: hidden; font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; font-size: 14px; line-height: 1.7; }
+    .term__bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; background: var(--bg3); color: var(--muted); font-size: 12px; }
+    .term__bar i { width: 9px; height: 9px; border-radius: 50%; background: #3a3a52; }
+    .term__bar span { margin-left: 10px; }
+    .term__body { padding: 16px 18px 20px; }
+    .term__body p { margin: 0; color: var(--muted); }
+    .term__body .term__cmd { color: var(--ink); margin-top: 10px; }
+    .term__body .term__cmd:first-child { margin-top: 0; }
+    .term__cmd::before { content: '>>> '; color: var(--accent); }
+    .term__body .term__ok { color: var(--accent2); }
+    .term__cur { display: inline-block; width: 0.6em; height: 1.1em; margin-left: 1px; vertical-align: text-bottom; background: var(--accent2); animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
     @keyframes pulse { 50% { opacity: 0.35; transform: scale(0.75); } }
+    @media (prefers-reduced-motion: reduce) { .term__cur { animation: none; } }
 
     .about__cta { display: flex; gap: 12px; flex-wrap: wrap; }
 
@@ -234,7 +229,9 @@
       gap: var(--m);
       padding: 40px var(--m) 0;
     }
+    .figures__more { row-gap: 56px; }
     .figures__more li { display: flex; align-items: baseline; gap: 20px; }
+    .figures__more .figures__links { align-items: center; flex-wrap: wrap; }
     .figures__num { font-size: var(--fs-l); font-weight: 700; letter-spacing: -0.035em; line-height: 1; white-space: nowrap; }
     .figures__more p { font-size: var(--fs-body); max-width: 24ch; }
 
@@ -244,38 +241,29 @@
     .roll__strip { display: flex; flex-direction: column; transform: translateY(calc(var(--d) * -1em)); }
     .roll__strip::before { content: '0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9'; white-space: pre; line-height: 1em; }
 
-    /* SITES: each project's first screen, stacked like cards as the page scrolls */
+    /* SITES: one curved row of screenshots (tilted-grid.js), then the list of links */
     .sites { padding: var(--gap) var(--m) 0; }
-    .sites__head { display: grid; grid-template-columns: 1fr 1fr; gap: var(--m); align-items: end; margin-bottom: clamp(56px, 8vw, 112px); }
+    .sites__head { display: grid; grid-template-columns: 1fr 1fr; gap: var(--m); align-items: end; margin-bottom: clamp(40px, 6vw, 80px); }
     .sites__lead { font-size: var(--fs-st); font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; max-width: 20em; }
-    .sites__list { list-style: none; display: flex; flex-direction: column; gap: 28vh; }
-    .site-card {
-      position: sticky;
-      top: 10vh;
-      display: grid;
-      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr);
-      gap: clamp(24px, 3vw, 48px);
-      align-items: end;
-      padding: clamp(16px, 1.6vw, 24px);
-      background: var(--bg2);
-      box-shadow: 0 -24px 48px rgba(0, 0, 0, 0.5); /* taste-skill-ignore: sticky card overlapping the one beneath */
-    }
-    .site-card__shot { display: block; background: var(--bg3); color: var(--muted); text-decoration: none; }
-    .site-card__bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; font-size: 13px; }
-    .site-card__bar i { width: 9px; height: 9px; border-radius: 50%; background: #2c2c3e; }
-    .site-card__bar span { margin-left: 10px; }
-    .site-card__shot img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
-    .site-card__info { display: flex; flex-direction: column; gap: 10px; padding-bottom: 8px; }
-    .site-card__name { font-size: var(--fs-l); font-weight: 700; letter-spacing: -0.035em; line-height: 0.95; }
-    .site-card__kind { font-size: var(--fs-s); color: var(--accent2); }
-    .site-card__desc { font-size: var(--fs-body); max-width: 24em; }
-    .site-card__go { margin-top: 14px; align-self: flex-start; color: var(--ink); font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--accent); padding-bottom: 2px; transition: color var(--t-hover) ease; }
-    @media (hover: hover) and (pointer: fine) {
-      .site-card__shot img { transition: transform 900ms var(--ease-expo); }
-      .site-card__shot { overflow: hidden; }
-      .site-card:hover .site-card__shot img { transform: scale(1.03); }
-      .site-card__go:hover { color: var(--accent2); }
-    }
+    .tgh { position: relative; overflow: hidden; container-type: size; height: clamp(340px, 50vw, 620px); margin: 0 calc(var(--m) * -1) clamp(40px, 5vw, 72px); }
+    .tgh__band { position: absolute; inset: 0; opacity: 0; transition: opacity 500ms ease; }
+    .tgh.is-ready .tgh__band { opacity: 1; }
+    .tgh__tile { position: absolute; transform-style: preserve-3d; cursor: pointer; }
+    .tgh__band:hover .tgh__tile { animation-play-state: paused; } /* hold still so the target doesn't slide away */
+    .tgh__slice { position: absolute; top: 0; overflow: hidden; background: var(--bg3); }
+    .tgh__slice:first-child { border-radius: 8px 0 0 8px; }
+    .tgh__slice:last-child { border-radius: 0 8px 8px 0; }
+    .tgh__slice img { position: absolute; top: 0; display: block; max-width: none; object-fit: cover; object-position: top; }
+    .tgh.is-off .tgh__tile { animation-play-state: paused; }
+    @media (prefers-reduced-motion: reduce) { .tgh__tile { animation-play-state: paused; } }
+    .sites__list { list-style: none; border-top: 1px solid var(--bg3); }
+    .sites__list li { border-bottom: 1px solid var(--bg3); }
+    .sites__row { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.6fr) auto; gap: var(--m); align-items: baseline; padding: 22px 0; color: var(--ink); text-decoration: none; }
+    .sites__name { font-size: clamp(24px, 2.6vw, 40px); font-weight: 700; letter-spacing: -0.035em; line-height: 1; }
+    .sites__kind { font-size: var(--fs-s); color: var(--accent2); }
+    .sites__desc { font-size: var(--fs-s); color: var(--muted); }
+    .sites__go { font-weight: 600; color: var(--ink); transition: color var(--t-hover) ease; }
+    @media (hover: hover) and (pointer: fine) { .sites__row:hover .sites__go { color: var(--accent2); } }
 
     /* WORK: names pass over a held square that shows the current project */
     .work {
@@ -480,7 +468,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .about__status::before, .frag__live { animation: none; }
+      .frag__live { animation: none; }
       .step__desc { transition: none; }
     }
 
@@ -495,10 +483,8 @@
       .figures__note { text-align: left; font-size: 16px; }
       .figures__more { grid-template-columns: 1fr; gap: 28px; }
       .sites__head { grid-template-columns: 1fr; gap: 24px; }
-      .sites__list { gap: 56px; }
-      .site-card { position: static; grid-template-columns: 1fr; box-shadow: none; /* taste-skill-ignore: removes the stacking shadow */ }
-      .site-card__bar { font-size: 12px; }
-      .site-card__name { font-size: 40px; }
+      .sites__row { grid-template-columns: 1fr auto; row-gap: 6px; }
+      .sites__desc { grid-column: 1 / -1; }
       .figures__more li { flex-direction: column; gap: 6px; }
 
       .work__stage { display: none; }
@@ -545,8 +531,20 @@
       <span class="line"><span data-line style="--i:0">Quem é</span></span>
       <span class="line"><span data-line style="--i:1">Silvestre</span></span>
     </h2>
-    <p class="about__lead" data-reveal style="--i:2">Estudante de Inteligência Artificial e cofundador da BrandForge, em Brasília.</p>
-    <p class="about__status" data-reveal style="--i:3">Disponível para estágio em Engenharia de IA · remoto ou híbrido em Brasília · início imediato</p>
+    <div class="term" data-reveal style="--i:2" data-term>
+      <p class="term__bar"><i></i><i></i><i></i><span>python3 — silvestre@brandforge</span></p>
+      <div class="term__body">
+        <p class="term__cmd">nome</p>
+        <p>'Silvestre Fernandes da Silva'</p>
+        <p class="term__cmd">cargos</p>
+        <p>['Estudante de IA · UniCEUB', 'CEO · BrandForge']</p>
+        <p class="term__cmd">stack</p>
+        <p>['python', 'typescript', 'next.js', 'rag', 'agentes', 'n8n']</p>
+        <p class="term__cmd">estagio</p>
+        <p class="term__ok">{'status': 'disponível', 'area': 'Engenharia de IA', 'local': 'remoto ou híbrido em Brasília', 'inicio': 'imediato'}</p>
+        <p class="term__cmd"></p>
+      </div>
+    </div>
     <div class="about__cta" data-reveal style="--i:4">
       <a href="#projects" class="btn btn-primary">Minha apresentação</a>
       <a href="https://brandforge-siteoficial.vercel.app/" target="_blank" rel="noopener" class="btn btn-quiet">Portfólio BrandForge ↗</a>
@@ -582,7 +580,7 @@
     <article class="chapter">
       <h3 data-reveal>Comunico</h3>
       <p data-reveal style="--i:1">
-        Publico cerca de dez vídeos por dia sobre tecnologia e IA no TikTok e no Instagram.
+        Publico cerca de dez vídeos por dia no TikTok sobre tecnologia e IA, e também tenho presença no Instagram.
         É conteúdo em escala, todo dia, e é ele que traz contatos de novos clientes para a BrandForge.
       </p>
     </article>
@@ -601,7 +599,20 @@
   <ul class="figures__more">
     <li data-reveal>
       <span class="figures__num"><span data-roll>10</span> vídeos</span>
-      <p>por dia, em média, sobre tecnologia e IA no TikTok e no Instagram.</p>
+      <p>por dia no TikTok, sobre tecnologia e IA.</p>
+    </li>
+    <!-- Pisos arredondados para baixo: só sobem, então nunca ficam desatualizados. -->
+    <li data-reveal style="--i:1">
+      <span class="figures__num">+<span data-roll>175</span> mil</span>
+      <p>views no meu vídeo de maior alcance.</p>
+    </li>
+    <li data-reveal style="--i:2">
+      <span class="figures__num">+<span data-roll>500</span> mil</span>
+      <p>views em um único mês, só no TikTok.</p>
+    </li>
+    <li class="figures__links" data-reveal style="--i:3">
+      <a href="https://www.tiktok.com/@silvestre_fernandes__" target="_blank" rel="noopener" class="btn btn-quiet">TikTok ↗</a>
+      <a href="https://www.instagram.com/silvestre_fernandes_/" target="_blank" rel="noopener" class="btn btn-quiet">Instagram ↗</a>
     </li>
   </ul>
 </section>
@@ -615,68 +626,23 @@
     </h2>
     <p class="sites__lead" data-reveal style="--i:2">Cada um desenhado do zero para o negócio que ele vende. Estão todos no ar: abra e navegue.</p>
   </div>
-  <!-- Para adicionar um site: salve um print da primeira tela (1440×900) em assets/sites/ e copie um <li> abaixo. -->
+  <div class="tgh" data-tgh></div>
   <ol class="sites__list">
-    <li class="site-card">
-      <a class="site-card__shot shutter" href="https://www.dralucianalemes.com.br" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
-        <span class="site-card__bar"><i></i><i></i><i></i><span>dralucianalemes.com.br</span></span>
-        <img src="assets/sites/luciana.jpg" alt="" width="1440" height="900" decoding="async" />
-      </a>
-      <div class="site-card__info">
-        <h3 class="site-card__name">Dra. Luciana Lemes</h3>
-        <p class="site-card__kind">Médica · Trindade e Goiânia</p>
-        <p class="site-card__desc">Saúde da mulher depois dos 40, com o agendamento indo direto para o WhatsApp.</p>
-        <a class="site-card__go" href="https://www.dralucianalemes.com.br" target="_blank" rel="noopener">Abrir o site ↗</a>
-      </div>
-    </li>
-    <li class="site-card">
-      <a class="site-card__shot shutter" href="https://iicv.vercel.app/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
-        <span class="site-card__bar"><i></i><i></i><i></i><span>iicv.vercel.app</span></span>
-        <img src="assets/sites/iicv.jpg" alt="" width="1440" height="900" decoding="async" />
-      </a>
-      <div class="site-card__info">
-        <h3 class="site-card__name">IICV</h3>
-        <p class="site-card__kind">Instituto de cardiologia · Brasília</p>
-        <p class="site-card__desc">Abre com a marca em ouro sobre azul-noite e leva a consulta a um clique.</p>
-        <a class="site-card__go" href="https://iicv.vercel.app/" target="_blank" rel="noopener">Abrir o site ↗</a>
-      </div>
-    </li>
-    <li class="site-card">
-      <a class="site-card__shot shutter" href="https://chicagoburgersite.vercel.app/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
-        <span class="site-card__bar"><i></i><i></i><i></i><span>chicagoburgersite.vercel.app</span></span>
-        <img src="assets/sites/chicago.jpg" alt="" width="1440" height="900" decoding="async" />
-      </a>
-      <div class="site-card__info">
-        <h3 class="site-card__name">Chicago Burger</h3>
-        <p class="site-card__kind">Hamburgueria · Vicente Pires</p>
-        <p class="site-card__desc">Cardápio com preços, vitrine e pedido feito direto pelo site.</p>
-        <a class="site-card__go" href="https://chicagoburgersite.vercel.app/" target="_blank" rel="noopener">Abrir o site ↗</a>
-      </div>
-    </li>
-    <li class="site-card">
-      <a class="site-card__shot shutter" href="https://imobiliaria-lyart.vercel.app/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
-        <span class="site-card__bar"><i></i><i></i><i></i><span>imobiliaria-lyart.vercel.app</span></span>
-        <img src="assets/sites/casa-alta.jpg" alt="" width="1440" height="900" decoding="async" />
-      </a>
-      <div class="site-card__info">
-        <h3 class="site-card__name">Casa Alta</h3>
-        <p class="site-card__kind">Imobiliária de alto padrão</p>
-        <p class="site-card__desc">Busca de imóveis por tipo, região e código, com destaques e fotos grandes.</p>
-        <a class="site-card__go" href="https://imobiliaria-lyart.vercel.app/" target="_blank" rel="noopener">Abrir o site ↗</a>
-      </div>
-    </li>
-    <li class="site-card">
-      <a class="site-card__shot shutter" href="https://ironman-pi-silk.vercel.app/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
-        <span class="site-card__bar"><i></i><i></i><i></i><span>ironman-pi-silk.vercel.app</span></span>
-        <img src="assets/sites/stark.jpg" alt="" width="1440" height="900" decoding="async" />
-      </a>
-      <div class="site-card__info">
-        <h3 class="site-card__name">Stark Industries</h3>
-        <p class="site-card__kind">Página-conceito</p>
-        <p class="site-card__desc">Um exercício de interface inspirado no Homem de Ferro, com animação presa ao scroll.</p>
-        <a class="site-card__go" href="https://ironman-pi-silk.vercel.app/" target="_blank" rel="noopener">Abrir o site ↗</a>
-      </div>
-    </li>
+    <li><a class="sites__row" href="https://www.dralucianalemes.com.br" target="_blank" rel="noopener" data-shot="assets/sites/luciana.jpg">
+      <span class="sites__name">Dra. Luciana Lemes</span><span class="sites__kind">Médica · Trindade e Goiânia</span><span class="sites__desc">Saúde da mulher depois dos 40, com o agendamento indo direto para o WhatsApp.</span><span class="sites__go">Abrir ↗</span>
+    </a></li>
+    <li><a class="sites__row" href="https://iicv.vercel.app/" target="_blank" rel="noopener" data-shot="assets/sites/iicv.jpg">
+      <span class="sites__name">IICV</span><span class="sites__kind">Instituto de cardiologia · Brasília</span><span class="sites__desc">Abre com a marca em ouro sobre azul-noite e leva a consulta a um clique.</span><span class="sites__go">Abrir ↗</span>
+    </a></li>
+    <li><a class="sites__row" href="https://chicagoburgersite.vercel.app/" target="_blank" rel="noopener" data-shot="assets/sites/chicago.jpg">
+      <span class="sites__name">Chicago Burger</span><span class="sites__kind">Hamburgueria · Vicente Pires</span><span class="sites__desc">Cardápio com preços, vitrine e pedido feito direto pelo site.</span><span class="sites__go">Abrir ↗</span>
+    </a></li>
+    <li><a class="sites__row" href="https://imobiliaria-lyart.vercel.app/" target="_blank" rel="noopener" data-shot="assets/sites/casa-alta.jpg">
+      <span class="sites__name">Casa Alta</span><span class="sites__kind">Imobiliária de alto padrão</span><span class="sites__desc">Busca de imóveis por tipo, região e código, com destaques e fotos grandes.</span><span class="sites__go">Abrir ↗</span>
+    </a></li>
+    <li><a class="sites__row" href="https://ironman-pi-silk.vercel.app/" target="_blank" rel="noopener" data-shot="assets/sites/stark.jpg">
+      <span class="sites__name">Stark Industries</span><span class="sites__kind">Página-conceito</span><span class="sites__desc">Um exercício de interface inspirado no Homem de Ferro, com animação presa ao scroll.</span><span class="sites__go">Abrir ↗</span>
+    </a></li>
   </ol>
 </section>
 
@@ -862,5 +828,7 @@ components/
   });
 </script>
 <script src="sections.js"></script>
+<script src="tilted-grid.js"></script>
+<script src="terminal.js"></script>
 </body>
 </html>
