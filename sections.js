@@ -98,4 +98,41 @@
     showStep(steps[0]);
     follow(steps, showStep);
   }
+
+  // Studio: the scroll scrubs the video and shows the beat that owns the current second.
+  const studio = document.querySelector('.studio');
+  if (studio && !reduce) {
+    const video = studio.querySelector('video');
+    const beats = [...studio.querySelectorAll('.studio__beat')];
+    const duration = Number(video.dataset.duration);
+    studio.classList.add('is-scrub');
+    // The video is ~12 MB, so it only starts loading when the section is a screen away.
+    // Played from memory: seeking then works even on servers without Range support, where Chrome refuses to seek.
+    const load = () => {
+      fetch(video.dataset.src)
+        .then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); })
+        .then(blob => { video.src = URL.createObjectURL(blob); })
+        .catch(() => { video.src = video.dataset.src; });
+    };
+    if (hasIO) {
+      const near = new IntersectionObserver(([e]) => { if (e.isIntersecting) { load(); near.disconnect(); } }, { rootMargin: '100% 0px' });
+      near.observe(studio);
+    } else load();
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const box = studio.getBoundingClientRect();
+      const progress = Math.min(1, Math.max(0, -box.top / (box.height - innerHeight)));
+      // The last tenth of the scroll holds the final frame.
+      const t = Math.min(1, progress / 0.9) * duration;
+      if (video.readyState >= 1 && Math.abs(video.currentTime - t) > 0.02) video.currentTime = Math.min(t, duration - 0.05);
+      const on = beats.findLast(b => t >= Number(b.dataset.from));
+      beats.forEach(b => b.classList.toggle('is-on', b === on));
+    };
+    const ask = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    addEventListener('scroll', ask, { passive: true });
+    addEventListener('resize', ask);
+    video.addEventListener('loadedmetadata', ask);
+    update();
+  }
 })();
