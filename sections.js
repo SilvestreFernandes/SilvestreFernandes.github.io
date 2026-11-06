@@ -106,7 +106,7 @@
     const beats = [...studio.querySelectorAll('.studio__beat')];
     const duration = Number(video.dataset.duration);
     studio.classList.add('is-scrub');
-    // The video is ~12 MB, so it only starts loading when the section is a screen away.
+    // The video is ~29 MB, so it only starts loading when the section is a screen away.
     // Played from memory: seeking then works even on servers without Range support, where Chrome refuses to seek.
     const load = () => {
       fetch(video.dataset.src)
