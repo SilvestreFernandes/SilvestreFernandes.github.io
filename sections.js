@@ -125,7 +125,7 @@
       const progress = Math.min(1, Math.max(0, -box.top / (box.height - innerHeight)));
       // The last tenth of the scroll holds the final frame.
       const t = Math.min(1, progress / 0.9) * duration;
-      if (video.readyState >= 1 && Math.abs(video.currentTime - t) > 0.02) video.currentTime = Math.min(t, duration - 0.05);
+      if (video.readyState >= 1 && !video.seeking && Math.abs(video.currentTime - t) > 0.02) video.currentTime = Math.min(t, duration - 0.05);
       const on = beats.findLast(b => t >= Number(b.dataset.from));
       beats.forEach(b => b.classList.toggle('is-on', b === on));
     };
@@ -133,6 +133,7 @@
     addEventListener('scroll', ask, { passive: true });
     addEventListener('resize', ask);
     video.addEventListener('loadedmetadata', ask);
+    video.addEventListener('seeked', ask);
     update();
   }
 })();
